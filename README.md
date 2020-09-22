@@ -1,3 +1,3 @@
-[![](https://jitpack.io/v/hendi-evolution/AndroidCamera.svg)](https://jitpack.io/#hendi-evolution/AndroidCamera)
+[![](https://jitpack.io/v/indodevniaga/AndroidCamera.svg)](https://jitpack.io/#indodevniaga/AndroidCamera)
 
 "# AndroidCamera" 
