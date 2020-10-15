@@ -43,78 +43,113 @@ class CaptureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        // Init file manager
-        imageFileManager = ImageFileManager(this)
-        imageFileManager.createDir()
+        try {
 
-        // Init helper
-        helper = CaptureActivityHelper(imageFileManager)
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        // Init page timer
-        pageFinisher = PageFinisher(this, 10 * 1000 * 60)
+            // Init file manager
+            imageFileManager = ImageFileManager(this)
+            imageFileManager.createDir()
 
-        // Add camera listener
-        camera_view.setLifecycleOwner(this)
-        camera_view.addCameraListener(cameraListener)
-        camera_view.setPictureSize(SizeSelectors.smallest())
+            // Init helper
+            helper = CaptureActivityHelper(imageFileManager)
 
-        // Add take picture button listener
-        btn_take_picture.setOnClickListener {
-            var delay: Long = 0
-            if (btn_flash_on.visibility == View.VISIBLE && camera_view.facing == Facing.BACK) {
-                camera_view.flash = Flash.TORCH
-                delay = 1000
-            }
-            showProgressDialog(true)
-            Handler().postDelayed({
-                camera_view.playSounds = isAudioServiceMute()
-                val snapshot = intent.extras.getBoolean("is_snapshot", true)
-                if (snapshot) {
-                    camera_view.takePictureSnapshot() // faster
-                } else {
-                    camera_view.takePicture()
+            // Init page timer
+            pageFinisher = PageFinisher(this, 3 * 1000 * 60)
+
+            // Add camera listener
+            camera_view.setLifecycleOwner(this)
+            camera_view.addCameraListener(cameraListener)
+            camera_view.setPictureSize(SizeSelectors.smallest())
+
+            // Add take picture button listener
+            btn_take_picture.setOnClickListener {
+                var delay: Long = 0
+                if (btn_flash_on.visibility == View.VISIBLE && camera_view.facing == Facing.BACK) {
+                    camera_view.flash = Flash.TORCH
+                    delay = 1000
                 }
-            }, delay)
-        }
+                showProgressDialog(true)
+                Handler().postDelayed({
+                    camera_view.playSounds = isAudioServiceMute()
+                    val snapshot = intent.extras.getBoolean("is_snapshot", true)
+                    if (snapshot) {
+                        camera_view.takePictureSnapshot() // faster
+                    } else {
+                        camera_view.takePicture()
+                    }
+                }, delay)
+            }
 
-        // Add back button listener
-        btn_back.setOnClickListener {
-            finish()
-        }
-
-        // Add back button listener
-        btn_retake.setOnClickListener {
-            viewMode(true)
-        }
-
-        // Add back button listener
-        btn_retake.setOnClickListener {
-            viewMode(true)
-        }
-
-        // Add select picture button listener
-        btn_select_picture.setOnClickListener {
-            helper.saveBitmapAndFinish(intent, camera_view.facing) {
-                val returnIntent = Intent()
-                returnIntent.putExtra("photo", it)
-                setResult(Activity.RESULT_OK, returnIntent)
+            // Add back button listener
+            btn_back.setOnClickListener {
                 finish()
             }
-        }
 
-        btn_flash_on.setOnClickListener {
-            btn_flash_on.visibility = View.GONE;
-            btn_flash_off.visibility = View.VISIBLE
-        }
+            // Add retake button listener
+            btn_retake.setOnClickListener {
+                viewMode(true)
+            }
 
-        btn_flash_off.setOnClickListener {
-            btn_flash_on.visibility = View.VISIBLE
-            btn_flash_off.visibility = View.GONE
-        }
+            // Add rotate button listener
+            btn_rotate_picture.setOnClickListener {
+                helper.rotate(iv_preview.rotation + 90) {
+                    iv_preview.setImageBitmap(it)
+                }
+            }
 
-        iv_gd_logo.setOnClickListener {
+            // Add select picture button listener
+            btn_select_picture.setOnClickListener {
+                helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                    val returnIntent = Intent()
+                    returnIntent.putExtra("photo", it)
+                    setResult(Activity.RESULT_OK, returnIntent)
+                    finish()
+                }
+            }
+
+            btn_flash_on.setOnClickListener {
+                btn_flash_on.visibility = View.GONE
+                btn_flash_off.visibility = View.VISIBLE
+            }
+
+            btn_flash_off.setOnClickListener {
+                btn_flash_on.visibility = View.VISIBLE
+                btn_flash_off.visibility = View.GONE
+            }
+
+            iv_gd_logo.setOnClickListener {
+                val data = Intent().apply {
+                    putExtra("native", true)
+                }
+                setResult(Activity.RESULT_OK, data)
+                finish()
+            }
+
+            // set view mode
+            viewMode(true)
+
+            // check front disable front camera
+            if (intent.getBooleanExtra("disable_back", false)) {
+                btn_switch_camera.visibility = View.GONE
+            } else {
+                btn_switch_camera.visibility = View.VISIBLE
+                btn_switch_camera.setOnClickListener {
+                    camera_view.toggleFacing()
+                    if (camera_view.facing == Facing.FRONT) {
+                        camera_view.flash = Flash.OFF
+                        btn_flash_on.visibility = View.GONE
+                        btn_flash_off.visibility = View.GONE
+                    } else {
+                        camera_view.flash = Flash.OFF
+                        btn_flash_on.visibility = View.GONE
+                        btn_flash_off.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+        } catch (ex: Exception) {
             val data = Intent().apply {
                 putExtra("native", true)
             }
@@ -122,27 +157,6 @@ class CaptureActivity : AppCompatActivity() {
             finish()
         }
 
-        // set view mode
-        viewMode(true)
-
-        // check front disable front camera
-        if (intent.getBooleanExtra("disable_back", false)) {
-            btn_switch_camera.visibility = View.GONE
-        } else {
-            btn_switch_camera.visibility = View.VISIBLE
-            btn_switch_camera.setOnClickListener {
-                camera_view.toggleFacing()
-                if (camera_view.facing == Facing.FRONT) {
-                    camera_view.flash = Flash.OFF
-                    btn_flash_on.visibility = View.GONE
-                    btn_flash_off.visibility = View.GONE
-                } else {
-                    camera_view.flash = Flash.OFF
-                    btn_flash_on.visibility = View.GONE
-                    btn_flash_off.visibility = View.VISIBLE
-                }
-            }
-        }
     }
 
     override fun onStart() {

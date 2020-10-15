@@ -18,7 +18,6 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
     private val imageFileManager = ImageFileManager(activity)
     private val nativeCameraHelper = NativeCameraHelper(imageFileManager)
 
-
     fun setCameraPluginListener(listener: CameraPluginListener?) {
         this.listener = listener
     }

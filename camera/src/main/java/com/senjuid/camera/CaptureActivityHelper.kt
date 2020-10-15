@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
+
 class CaptureActivityHelper(private val imageFileManager: ImageFileManager) {
     private var bitmapResult: Bitmap? = null
 
@@ -52,6 +53,17 @@ class CaptureActivityHelper(private val imageFileManager: ImageFileManager) {
                     callback(file?.absolutePath)
                 }
             }
+        }
+    }
+
+    fun rotate(angle: Float, callback: (Bitmap?) -> Unit) {
+        try {
+            val matrix = Matrix()
+            matrix.postRotate(angle)
+            bitmapResult = Bitmap.createBitmap(bitmapResult!!, 0, 0, bitmapResult!!.width, bitmapResult!!.height, matrix, false)
+            callback(bitmapResult)
+        } catch (ex: Exception) {
+            callback(bitmapResult)
         }
     }
 
