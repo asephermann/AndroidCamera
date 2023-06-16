@@ -32,9 +32,12 @@ class CaptureActivity : AppCompatActivity() {
 
             var maxSize = intent.getIntExtra("max_size", 0)
             helper.pictureResultHandler(result, maxSize) {
-                iv_preview.setImageBitmap(it)
-                showProgressDialog(false)
-                viewMode(false)
+                helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                    val returnIntent = Intent()
+                    returnIntent.putExtra("photo", it)
+                    setResult(Activity.RESULT_OK, returnIntent)
+                    finish()
+                }
             }
         }
     }
@@ -141,10 +144,12 @@ class CaptureActivity : AppCompatActivity() {
                         camera_view.flash = Flash.OFF
                         btn_flash_on.visibility = View.GONE
                         btn_flash_off.visibility = View.GONE
+                        face_silhouette.visibility = View.VISIBLE
                     } else {
                         camera_view.flash = Flash.OFF
                         btn_flash_on.visibility = View.GONE
                         btn_flash_off.visibility = View.VISIBLE
+                        face_silhouette.visibility = View.GONE
                     }
                 }
             }
