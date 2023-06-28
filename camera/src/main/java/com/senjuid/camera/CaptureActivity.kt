@@ -133,17 +133,14 @@ class CaptureActivity : AppCompatActivity() {
             // set view mode
             viewMode(true)
 
-            // Set visibility of face silhouette based on the "show_face_area" extra in the intent
-            face_silhouette.visibility = if (intent.getBooleanExtra(
-                    "show_face_area",
-                    false
-                ) && camera_view.facing == Facing.FRONT
-            ) View.VISIBLE else View.GONE
-
             // Check if the "disable_back" extra in the intent is true
             if (intent.getBooleanExtra("disable_back", false)) {
                 // Disable back camera functionality
                 camera_view.facing = Facing.FRONT
+
+                // Set visibility of face silhouette based on the "show_face_area" extra in the intent
+                face_silhouette.visibility =
+                    if (intent.getBooleanExtra("show_face_area", false)) View.VISIBLE else View.GONE
                 btn_switch_camera.visibility = View.GONE
             } else {
                 // Set camera facing based on the "facing_back" extra in the intent
