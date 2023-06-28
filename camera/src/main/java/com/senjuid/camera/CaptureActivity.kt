@@ -133,24 +133,53 @@ class CaptureActivity : AppCompatActivity() {
             // set view mode
             viewMode(true)
 
-            // check front disable front camera
+            // Set visibility of face silhouette based on the "show_face_area" extra in the intent
+            face_silhouette.visibility = if (intent.getBooleanExtra(
+                    "show_face_area",
+                    false
+                ) && camera_view.facing == Facing.FRONT
+            ) View.VISIBLE else View.GONE
+
+            // Check if the "disable_back" extra in the intent is true
             if (intent.getBooleanExtra("disable_back", false)) {
+                // Disable back camera functionality
+                camera_view.facing = Facing.FRONT
                 btn_switch_camera.visibility = View.GONE
             } else {
+                // Set camera facing based on the "facing_back" extra in the intent
+                camera_view.facing =
+                    if (intent.getBooleanExtra("facing_back", true)) Facing.BACK else Facing.FRONT
+
+                // Set visibility of face silhouette based on the camera facing and "show_face_area" extra
+                if (intent.getBooleanExtra(
+                        "show_face_area",
+                        false
+                    ) && camera_view.facing == Facing.FRONT
+                ) {
+                    face_silhouette.visibility = View.VISIBLE
+                } else {
+                    face_silhouette.visibility = View.GONE
+                }
+
+                // Set visibility and click listener for the switch camera button
                 btn_switch_camera.visibility = View.VISIBLE
                 btn_switch_camera.setOnClickListener {
                     camera_view.toggleFacing()
-                    if (camera_view.facing == Facing.FRONT) {
-                        camera_view.flash = Flash.OFF
-                        btn_flash_on.visibility = View.GONE
-                        btn_flash_off.visibility = View.GONE
+                    if (intent.getBooleanExtra(
+                            "show_face_area",
+                            false
+                        ) && camera_view.facing == Facing.FRONT
+                    ) {
                         face_silhouette.visibility = View.VISIBLE
                     } else {
-                        camera_view.flash = Flash.OFF
-                        btn_flash_on.visibility = View.GONE
-                        btn_flash_off.visibility = View.VISIBLE
                         face_silhouette.visibility = View.GONE
                     }
+                    camera_view.flash =
+                        if (camera_view.facing == Facing.BACK) Flash.OFF else Flash.OFF
+                    btn_flash_on.visibility =
+                        if (camera_view.facing == Facing.BACK) View.GONE else View.GONE
+                    btn_flash_off.visibility =
+                        if (camera_view.facing == Facing.BACK) View.VISIBLE else View.GONE
                 }
             }
 
