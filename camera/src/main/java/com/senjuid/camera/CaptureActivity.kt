@@ -31,12 +31,19 @@ class CaptureActivity : AppCompatActivity() {
             }
 
             var maxSize = intent.getIntExtra("max_size", 0)
-            helper.pictureResultHandler(result, maxSize) {
-                helper.saveBitmapAndFinish(intent, camera_view.facing) {
-                    val returnIntent = Intent()
-                    returnIntent.putExtra("photo", it)
-                    setResult(Activity.RESULT_OK, returnIntent)
-                    finish()
+            helper.pictureResultHandler(result, maxSize) { bitmap ->
+                // Check if the "disable_preview" extra in the intent is true
+                if (intent.getBooleanExtra("disable_preview", false)) {
+                    helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                        val returnIntent = Intent()
+                        returnIntent.putExtra("photo", it)
+                        setResult(Activity.RESULT_OK, returnIntent)
+                        finish()
+                    }
+                } else {
+                    iv_preview.setImageBitmap(bitmap)
+                    showProgressDialog(false)
+                    viewMode(false)
                 }
             }
         }

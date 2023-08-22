@@ -7,6 +7,7 @@ class CameraPluginOptions private constructor(
         val isFacingBack: Boolean?,
         val showFaceArea: Boolean?,
         val disableFacingBack: Boolean?,
+        val disablePreview: Boolean?,
         val disableMirroring: Boolean?,
         val snapshot: Boolean?
 ) {
@@ -17,6 +18,7 @@ class CameraPluginOptions private constructor(
             private var isFacingBack: Boolean? = true,
             private var showFaceArea: Boolean? = false,
             private var disableFacingBack: Boolean? = false,
+            private var disablePreview: Boolean? = true,
             private var disableMirroring: Boolean? = true,
             private var snapshot: Boolean? = true
     ) {
@@ -50,8 +52,9 @@ class CameraPluginOptions private constructor(
          * @return the modified instance of the class.
          */
         fun setDisableFacingBack(disable: Boolean) = apply { this.disableFacingBack = disable }
+        fun setDisablePreview(disable: Boolean) = apply { this.disablePreview = disable }
         fun setDisableMirroring(disable: Boolean) = apply { this.disableMirroring = disable }
         fun setSnapshot(snapshot: Boolean) = apply { this.snapshot = snapshot }
-        fun build() = CameraPluginOptions(maxSize, quality, name, isFacingBack, showFaceArea, disableFacingBack, disableMirroring, snapshot)
+        fun build() = CameraPluginOptions(maxSize, quality, name, isFacingBack, showFaceArea, disableFacingBack, disablePreview, disableMirroring, snapshot)
     }
 }
