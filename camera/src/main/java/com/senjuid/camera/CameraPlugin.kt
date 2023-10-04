@@ -26,9 +26,9 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
         val intent = getIntent(options)
         if (activity is AppCompatActivity) {
             val startForResult =
-                    activity.prepareCall(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                        onActivityResult(REQUEST, result.resultCode, result.data)
-                    }
+                activity.prepareCall(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                    onActivityResult(REQUEST, result.resultCode, result.data)
+                }
             startForResult(intent)
         } else {
             activity.startActivityForResult(intent, REQUEST)
@@ -55,11 +55,15 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
                 val performNativeCamera = data?.getBooleanExtra("native", false)
                 listener?.let {
                     val photoPath = data?.getStringExtra("photo")
-                    if(performNativeCamera!!) {
+                    if (performNativeCamera!!) {
                         it.onSuccess("", true)
                     } else {
                         if (photoPath != null) {
-                            it.onSuccess(photoPath, false)
+                            if (photoPath != "") {
+                                it.onSuccess(photoPath, false)
+                            } else {
+                                it.onSuccess("", true)
+                            }
                         } else {
                             it.onCancel()
                         }
@@ -75,8 +79,8 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
 
     private fun openNativeCamera() {
         val options = CameraPluginOptions.Builder()
-                .setName("native")
-                .build()
+            .setName("native")
+            .build()
         nativeCameraHelper.setCameraPluginListener(listener)
         nativeCameraHelper.open(options)
     }

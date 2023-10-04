@@ -34,9 +34,16 @@ class CaptureActivity : AppCompatActivity() {
             helper.pictureResultHandler(result, maxSize) { bitmap ->
                 // Check if the "disable_preview" extra in the intent is true
                 if (intent.getBooleanExtra("disable_preview", false)) {
-                    helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                    try {
+                        helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                            val returnIntent = Intent()
+                            returnIntent.putExtra("photo", it)
+                            setResult(Activity.RESULT_OK, returnIntent)
+                            finish()
+                        }
+                    } catch (e: Exception) {
                         val returnIntent = Intent()
-                        returnIntent.putExtra("photo", it)
+                        returnIntent.putExtra("photo", "")
                         setResult(Activity.RESULT_OK, returnIntent)
                         finish()
                     }
@@ -111,9 +118,16 @@ class CaptureActivity : AppCompatActivity() {
 
             // Add select picture button listener
             btn_select_picture.setOnClickListener {
-                helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                try {
+                    helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                        val returnIntent = Intent()
+                        returnIntent.putExtra("photo", it)
+                        setResult(Activity.RESULT_OK, returnIntent)
+                        finish()
+                    }
+                } catch (e: Exception) {
                     val returnIntent = Intent()
-                    returnIntent.putExtra("photo", it)
+                    returnIntent.putExtra("photo", "")
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish()
                 }
