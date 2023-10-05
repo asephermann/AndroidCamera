@@ -143,14 +143,6 @@ class CaptureActivity : AppCompatActivity() {
                 btn_flash_off.visibility = View.GONE
             }
 
-            iv_gd_logo.setOnClickListener {
-                val data = Intent().apply {
-                    putExtra("native", true)
-                }
-                setResult(Activity.RESULT_OK, data)
-                finish()
-            }
-
             // set view mode
             viewMode(true)
 
