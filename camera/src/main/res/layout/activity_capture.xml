@@ -19,7 +19,8 @@
             android:contentDescription="@string/app_name"
             android:focusable="true"
             android:padding="8dp"
-            android:src="@drawable/ic_back_white" />
+            android:src="@drawable/ic_back_white"
+            tools:ignore="DuplicateSpeakableTextCheck" />
 
         <ImageView
             android:id="@+id/iv_gd_logo"
@@ -51,8 +52,8 @@
 
                 <com.otaliastudios.cameraview.CameraView
                     android:id="@+id/camera_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:keepScreenOn="true"
                     app:cameraAudio="off"
                     app:cameraEngine="camera2"
@@ -61,7 +62,11 @@
                     app:cameraFlash="off"
                     app:cameraGestureTap="autoFocus"
                     app:cameraMode="picture"
-                    app:cameraUseDeviceOrientation="false" />
+                    app:cameraUseDeviceOrientation="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/face_silhouette"
@@ -73,7 +78,35 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ImageContrastCheck" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/btn_flash_off"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_flash_off"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription, RtlHardcoded,TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+                <ImageView
+                    android:id="@+id/btn_flash_on"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_flash_on"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -90,9 +123,9 @@
                     android:layout_height="40dp"
                     android:layout_gravity="bottom"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/app_name"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_change_camera" />
+                    android:src="@drawable/ic_change_camera"
+                    tools:ignore="ContentDescription, TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
                 <ImageView
                     android:id="@+id/hintTextView"
@@ -109,33 +142,6 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/button_circle_camera"
                     android:contentDescription="@string/app_name" />
-
-                <ImageView
-                    android:id="@+id/btn_flash_off"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="bottom|right"
-                    android:clickable="true"
-                    android:contentDescription="@string/app_name"
-                    android:focusable="true"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_flash_off"
-                    android:visibility="gone"
-                    tools:ignore="RtlHardcoded" />
-
-                <ImageView
-                    android:id="@+id/btn_flash_on"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="bottom|right"
-                    android:clickable="true"
-                    android:contentDescription="@string/app_name"
-                    android:focusable="true"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_flash_on"
-                    android:visibility="gone"
-                    tools:ignore="RtlHardcoded" />
-
             </FrameLayout>
         </LinearLayout>
 
@@ -177,8 +183,8 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
-                android:src="@drawable/ic_rotate"
-                android:contentDescription="@string/app_name" />
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_rotate" />
 
             <ImageButton
                 android:id="@+id/btn_retake"

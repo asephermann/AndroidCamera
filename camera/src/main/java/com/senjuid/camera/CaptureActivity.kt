@@ -30,7 +30,7 @@ class CaptureActivity : AppCompatActivity() {
                 camera_view.flash = Flash.OFF
             }
 
-            var maxSize = intent.getIntExtra("max_size", 0)
+            val maxSize = intent.getIntExtra("max_size", 0)
             helper.pictureResultHandler(result, maxSize) { bitmap ->
                 // Check if the "disable_preview" extra in the intent is true
                 if (intent.getBooleanExtra("disable_preview", false)) {
@@ -90,7 +90,7 @@ class CaptureActivity : AppCompatActivity() {
                 showProgressDialog(true)
                 Handler().postDelayed({
                     camera_view.playSounds = isAudioServiceMute()
-                    val snapshot = intent.extras.getBoolean("is_snapshot", true)
+                    val snapshot = intent.extras!!.getBoolean("is_snapshot", true)
                     if (snapshot) {
                         camera_view.takePictureSnapshot() // faster
                     } else {
@@ -106,6 +106,9 @@ class CaptureActivity : AppCompatActivity() {
 
             // Add retake button listener
             btn_retake.setOnClickListener {
+                if (btn_flash_on.visibility == View.VISIBLE) {
+                    camera_view.flash = Flash.TORCH
+                }
                 viewMode(true)
             }
 
@@ -134,11 +137,13 @@ class CaptureActivity : AppCompatActivity() {
             }
 
             btn_flash_on.setOnClickListener {
+                camera_view.flash = Flash.OFF
                 btn_flash_on.visibility = View.GONE
                 btn_flash_off.visibility = View.VISIBLE
             }
 
             btn_flash_off.setOnClickListener {
+                camera_view.flash = Flash.TORCH
                 btn_flash_on.visibility = View.VISIBLE
                 btn_flash_off.visibility = View.GONE
             }
@@ -184,12 +189,6 @@ class CaptureActivity : AppCompatActivity() {
                     } else {
                         face_silhouette.visibility = View.GONE
                     }
-                    camera_view.flash =
-                        if (camera_view.facing == Facing.BACK) Flash.OFF else Flash.OFF
-                    btn_flash_on.visibility =
-                        if (camera_view.facing == Facing.BACK) View.GONE else View.GONE
-                    btn_flash_off.visibility =
-                        if (camera_view.facing == Facing.BACK) View.VISIBLE else View.GONE
                 }
             }
 
