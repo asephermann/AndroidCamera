@@ -194,6 +194,7 @@ class CaptureActivity : AppCompatActivity() {
 
         } catch (ex: Exception) {
             val data = Intent().apply {
+                putExtra("photo", "")
                 putExtra("native", true)
             }
             setResult(Activity.RESULT_OK, data)
