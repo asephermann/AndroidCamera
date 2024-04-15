@@ -44,6 +44,8 @@ class CaptureActivity : AppCompatActivity() {
                     } catch (e: Exception) {
                         val returnIntent = Intent()
                         returnIntent.putExtra("photo", "")
+                        returnIntent.putExtra("native", true)
+                        returnIntent.putExtra("crash", true)
                         setResult(Activity.RESULT_OK, returnIntent)
                         finish()
                     }
@@ -131,6 +133,8 @@ class CaptureActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     val returnIntent = Intent()
                     returnIntent.putExtra("photo", "")
+                    returnIntent.putExtra("native", true)
+                    returnIntent.putExtra("crash", true)
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish()
                 }
@@ -192,10 +196,20 @@ class CaptureActivity : AppCompatActivity() {
                 }
             }
 
+            iv_gd_logo.setOnClickListener {
+                val returnIntent = Intent()
+                returnIntent.putExtra("photo", "")
+                returnIntent.putExtra("native", true)
+                returnIntent.putExtra("crash", true)
+                setResult(Activity.RESULT_OK, returnIntent)
+                finish()
+            }
+
         } catch (ex: Exception) {
             val data = Intent().apply {
                 putExtra("photo", "")
-                putExtra("native", true)
+                putExtra("native", false)
+                putExtra("crash", true)
             }
             setResult(Activity.RESULT_OK, data)
             finish()
