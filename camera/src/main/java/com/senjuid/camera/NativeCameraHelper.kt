@@ -58,7 +58,7 @@ class NativeCameraHelper(private val imageFileManager: ImageFileManager) : Conte
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (listener != null && imageFile != null && imageFile.exists()) {
-            listener?.onSuccess(imageFile.absolutePath, false)
+            listener?.onSuccess(photoPath = imageFile.absolutePath, native = false, crash = false)
         }
     }
 }
