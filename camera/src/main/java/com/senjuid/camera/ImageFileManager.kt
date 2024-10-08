@@ -14,7 +14,7 @@ interface IImageFilerManager {
 
 class ImageFileManager(context: Context) : IImageFilerManager, ContextWrapper(context) {
 
-    private var dirPath: String = "${baseContext.externalCacheDir.path}/GreatDayHR"
+    private var dirPath: String = "${baseContext.externalCacheDir?.path}/GreatDayHR"
 
     override fun createDir(): Boolean {
         val dir = File(dirPath)
