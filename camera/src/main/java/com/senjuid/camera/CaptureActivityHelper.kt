@@ -30,17 +30,11 @@ class CaptureActivityHelper(private val imageFileManager: ImageFileManager) {
         }
     }
 
-    fun saveBitmapAndFinish(intent: Intent, facing: Facing, callback: (String?) -> Unit) {
+    fun saveBitmapAndFinish(intent: Intent, callback: (String?) -> Unit) {
         bitmapResult?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    var bmp = it
-                    // Mirroring option
-                    val snapshot = intent.getBooleanExtra("is_snapshot", true)
-                    val disableMirror = intent.getBooleanExtra("disable_mirror", true)
-                    if (facing == Facing.FRONT && disableMirror && !snapshot) {
-                        bmp = it.flip(-1f, 1f, it.width / 2f, it.height / 2f)
-                    }
+                    val bmp = it
 
                     // Save picture to sdcard
                     val compress = intent.getIntExtra("quality", 100)
@@ -69,6 +63,17 @@ class CaptureActivityHelper(private val imageFileManager: ImageFileManager) {
             val matrix = Matrix()
             matrix.postRotate(angle)
             bitmapResult = Bitmap.createBitmap(bitmapResult!!, 0, 0, bitmapResult!!.width, bitmapResult!!.height, matrix, false)
+            callback(bitmapResult)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            callback(null)
+        }
+    }
+
+    fun flip(x: Float, y: Float, callback: (Bitmap?) -> Unit) {
+        try {
+            val matrix = Matrix().apply { postScale(x, y, bitmapResult!!.width / 2f, bitmapResult!!.height / 2f) }
+            bitmapResult = Bitmap.createBitmap(bitmapResult!!, 0, 0, bitmapResult!!.width, bitmapResult!!.height, matrix, true)
             callback(bitmapResult)
         } catch (ex: Exception) {
             ex.printStackTrace()

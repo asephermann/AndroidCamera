@@ -35,7 +35,7 @@ class CaptureActivity : AppCompatActivity() {
                 // Check if the "disable_preview" extra in the intent is true
                 if (intent.getBooleanExtra("disable_preview", false)) {
                     try {
-                        helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                        helper.saveBitmapAndFinish(intent) {
                             val returnIntent = Intent()
                             returnIntent.putExtra("photo", it)
                             setResult(Activity.RESULT_OK, returnIntent)
@@ -50,7 +50,14 @@ class CaptureActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    iv_preview.setImageBitmap(bitmap)
+                    val disableMirror = intent.getBooleanExtra("disable_mirror", true)
+                    if (camera_view.facing == Facing.FRONT && disableMirror) {
+                        helper.flip(-1f, 1f) {
+                            iv_preview.setImageBitmap(it)
+                        }
+                    } else {
+                        iv_preview.setImageBitmap(bitmap)
+                    }
                     showProgressDialog(false)
                     viewMode(false)
                 }
@@ -124,7 +131,7 @@ class CaptureActivity : AppCompatActivity() {
             // Add select picture button listener
             btn_select_picture.setOnClickListener {
                 try {
-                    helper.saveBitmapAndFinish(intent, camera_view.facing) {
+                    helper.saveBitmapAndFinish(intent) {
                         val returnIntent = Intent()
                         returnIntent.putExtra("photo", it)
                         setResult(Activity.RESULT_OK, returnIntent)
