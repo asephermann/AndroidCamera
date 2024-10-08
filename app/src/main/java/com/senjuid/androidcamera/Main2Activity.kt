@@ -21,11 +21,15 @@ class Main2Activity : AppCompatActivity() {
 
         cameraPlugin = CameraPlugin(this)
         cameraPlugin?.setCameraPluginListener(object : CameraPluginListener {
-            override fun onSuccess(photoPath: String, native: Boolean) {
-                if(native) {
+            override fun onSuccess(photoPath: String, native: Boolean, crash: Boolean) {
+                if (native) {
                     Toast.makeText(this@Main2Activity, "Canceled Native", Toast.LENGTH_LONG).show()
                 } else {
-                    showImage(photoPath)
+                    if (photoPath != "") {
+                        showImage(photoPath)
+                    } else {
+                        Toast.makeText(this@Main2Activity, "photoPath is Empty", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
 
@@ -38,18 +42,31 @@ class Main2Activity : AppCompatActivity() {
             val quality = et_quality.text.toString()
             val maxSize = et_max_size.text.toString()
             if (quality.isNullOrEmpty()) {
-                Toast.makeText(this@Main2Activity, "Please input image quality (1 - 100).", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@Main2Activity,
+                    "Please input image quality (1 - 100).",
+                    Toast.LENGTH_LONG
+                ).show()
                 return@setOnClickListener
             }
             if (maxSize.isNullOrEmpty()) {
-                Toast.makeText(this@Main2Activity, "Please input image maximum size.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@Main2Activity,
+                    "Please input image maximum size.",
+                    Toast.LENGTH_LONG
+                ).show()
                 return@setOnClickListener
             }
 
             val options = CameraPluginOptions.Builder()
-                    .setMaxSize(maxSize.toInt())
-                    .setQuality(quality.toInt())
-                    .build()
+                .setMaxSize(maxSize.toInt())
+                .setQuality(quality.toInt())
+                .setDisableFacingBack(false)
+                .setDisablePreview(false)
+                .setDisableMirroring(true)
+                .setIsFacingBack(false)
+                .setShowFaceArea(true)
+                .build()
             cameraPlugin?.open(options)
         }
     }
