@@ -35,11 +35,23 @@ class CaptureActivity : AppCompatActivity() {
                 // Check if the "disable_preview" extra in the intent is true
                 if (intent.getBooleanExtra("disable_preview", false)) {
                     try {
-                        helper.saveBitmapAndFinish(intent) {
-                            val returnIntent = Intent()
-                            returnIntent.putExtra("photo", it)
-                            setResult(Activity.RESULT_OK, returnIntent)
-                            finish()
+                        val disableMirror = intent.getBooleanExtra("disable_mirror", true)
+                        if (camera_view.facing == Facing.FRONT && disableMirror) {
+                            helper.flip(-1f, 1f) {
+                                helper.saveBitmapAndFinish(intent) {
+                                    val returnIntent = Intent()
+                                    returnIntent.putExtra("photo", it)
+                                    setResult(Activity.RESULT_OK, returnIntent)
+                                    finish()
+                                }
+                            }
+                        } else {
+                            helper.saveBitmapAndFinish(intent) {
+                                val returnIntent = Intent()
+                                returnIntent.putExtra("photo", it)
+                                setResult(Activity.RESULT_OK, returnIntent)
+                                finish()
+                            }
                         }
                     } catch (e: Exception) {
                         val returnIntent = Intent()
