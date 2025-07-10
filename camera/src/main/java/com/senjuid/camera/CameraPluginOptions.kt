@@ -7,6 +7,7 @@ class CameraPluginOptions private constructor(
         val name: String?,
         val isFacingBack: Boolean?,
         val showFaceArea: Boolean?,
+        val showNativeCameraButton: Boolean?,
         val disableFacingBack: Boolean?,
         val disablePreview: Boolean?,
         val disableMirroring: Boolean?,
@@ -19,6 +20,7 @@ class CameraPluginOptions private constructor(
             private var name: String? = "img_lite",
             private var isFacingBack: Boolean? = true,
             private var showFaceArea: Boolean? = false,
+            private var showNativeCameraButton: Boolean? = false,
             private var disableFacingBack: Boolean? = false,
             private var disablePreview: Boolean? = true,
             private var disableMirroring: Boolean? = true,
@@ -49,6 +51,17 @@ class CameraPluginOptions private constructor(
         fun setShowFaceArea(faceAreaVisible: Boolean = true) = apply { this.showFaceArea = faceAreaVisible }
 
         /**
+         * Sets whether the native camera button should be visible or not.
+         *
+         * This button allows the user to open the device's default camera application.
+         *
+         * @param showNativeCameraButton true to show the native camera button, false to hide it.
+         * @return the modified instance of the class.
+         * @see #setShowNativeCameraButton(boolean)
+         */
+        fun setShowNativeCameraButton(showNativeCameraButton: Boolean = true) = apply { this.showNativeCameraButton = showNativeCameraButton }
+
+        /**
          * Sets whether to disable the functionality of facing back.
          *
          * @param disable true to disable the facing back functionality, false otherwise.
@@ -58,6 +71,6 @@ class CameraPluginOptions private constructor(
         fun setDisablePreview(disable: Boolean) = apply { this.disablePreview = disable }
         fun setDisableMirroring(disable: Boolean) = apply { this.disableMirroring = disable }
         fun setSnapshot(snapshot: Boolean) = apply { this.snapshot = snapshot }
-        fun build() = CameraPluginOptions(cameraSource, maxSize, quality, name, isFacingBack, showFaceArea, disableFacingBack, disablePreview, disableMirroring, snapshot)
+        fun build() = CameraPluginOptions(cameraSource, maxSize, quality, name, isFacingBack, showFaceArea, showNativeCameraButton, disableFacingBack, disablePreview, disableMirroring, snapshot)
     }
 }

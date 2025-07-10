@@ -70,6 +70,7 @@ class Main2Activity : AppCompatActivity() {
                 .setDisableMirroring(true)
                 .setIsFacingBack(false)
                 .setShowFaceArea(true)
+                .setShowNativeCameraButton(true)
                 .build()
             cameraPlugin?.open(options)
         }

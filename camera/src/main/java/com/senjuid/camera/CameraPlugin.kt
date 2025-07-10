@@ -41,6 +41,7 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
         intent.putExtra("camera_source", options.cameraSource)
         intent.putExtra("facing_back", options.isFacingBack)
         intent.putExtra("show_face_area", options.showFaceArea)
+        intent.putExtra("show_native_camera_button", options.showNativeCameraButton)
         intent.putExtra("disable_back", options.disableFacingBack)
         intent.putExtra("disable_preview", options.disablePreview)
         intent.putExtra("disable_mirror", options.disableMirroring)

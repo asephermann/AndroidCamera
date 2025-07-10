@@ -182,6 +182,13 @@ class CaptureActivity : AppCompatActivity() {
             // set view mode
             viewMode(true)
 
+            // Set visibility of icon native camera button and "show_native_camera_button" extra
+            if (intent.getBooleanExtra("show_native_camera_button",true)) {
+                binding.ivCamera.visibility = View.VISIBLE
+            } else {
+                binding.ivCamera.visibility = View.GONE
+            }
+
             // Check if the "disable_back" extra in the intent is true
             if (intent.getBooleanExtra("disable_back", false)) {
                 // Disable back camera functionality
@@ -222,7 +229,7 @@ class CaptureActivity : AppCompatActivity() {
                 }
             }
 
-            binding.tvCamera.setOnClickListener {
+            binding.ivCamera.setOnClickListener {
                 val returnIntent = Intent()
                 returnIntent.putExtra("photo", "")
                 returnIntent.putExtra("native", true)
