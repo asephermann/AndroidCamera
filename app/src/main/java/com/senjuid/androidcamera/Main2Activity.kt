@@ -4,20 +4,22 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.senjuid.androidcamera.databinding.ActivityMain2Binding
 import com.senjuid.camera.CameraPlugin
 import com.senjuid.camera.CameraPluginListener
 import com.senjuid.camera.CameraPluginOptions
-import kotlinx.android.synthetic.main.activity_main2.*
 import java.io.File
 
 
 class Main2Activity : AppCompatActivity() {
 
     private var cameraPlugin: CameraPlugin? = null
+    private lateinit var binding: ActivityMain2Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        binding = ActivityMain2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         cameraPlugin = CameraPlugin(this)
         cameraPlugin?.setCameraPluginListener(object : CameraPluginListener {
@@ -28,7 +30,8 @@ class Main2Activity : AppCompatActivity() {
                     if (photoPath != "") {
                         showImage(photoPath)
                     } else {
-                        Toast.makeText(this@Main2Activity, "photoPath is Empty", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@Main2Activity, "photoPath is Empty", Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
             }
@@ -38,10 +41,10 @@ class Main2Activity : AppCompatActivity() {
             }
         })
 
-        button_click.setOnClickListener {
-            val quality = et_quality.text.toString()
-            val maxSize = et_max_size.text.toString()
-            if (quality.isNullOrEmpty()) {
+        binding.buttonClick.setOnClickListener {
+            val quality = binding.etQuality.text.toString()
+            val maxSize = binding.etMaxSize.text.toString()
+            if (quality.isEmpty()) {
                 Toast.makeText(
                     this@Main2Activity,
                     "Please input image quality (1 - 100).",
@@ -49,7 +52,7 @@ class Main2Activity : AppCompatActivity() {
                 ).show()
                 return@setOnClickListener
             }
-            if (maxSize.isNullOrEmpty()) {
+            if (maxSize.isEmpty()) {
                 Toast.makeText(
                     this@Main2Activity,
                     "Please input image maximum size.",
@@ -62,7 +65,7 @@ class Main2Activity : AppCompatActivity() {
                 .setMaxSize(maxSize.toInt())
                 .setQuality(quality.toInt())
                 .setDisableFacingBack(false)
-                .setDisablePreview(false)
+                .setDisablePreview(true)
                 .setDisableMirroring(true)
                 .setIsFacingBack(false)
                 .setShowFaceArea(true)
@@ -75,7 +78,7 @@ class Main2Activity : AppCompatActivity() {
         val imgFile = File(imagePath)
         if (imgFile.exists()) {
             val bitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-            iv_preview.setImageBitmap(bitmap)
+            binding.ivPreview.setImageBitmap(bitmap)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.senjuid.camera
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,21 +14,23 @@ import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.size.SizeSelectors
-import kotlinx.android.synthetic.main.activity_capture.*
+import com.senjuid.camera.databinding.ActivityCaptureBinding
+import androidx.core.view.isVisible
 
 /**
  * Created by Hendi, 19 Sep 2019
  * */
 class CaptureActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityCaptureBinding
     private lateinit var pageFinisher: PageFinisher
     private lateinit var helper: CaptureActivityHelper
     private lateinit var imageFileManager: ImageFileManager
 
     private val cameraListener = object : CameraListener() {
         override fun onPictureTaken(result: PictureResult) {
-            if (camera_view.flash == Flash.TORCH) {
-                camera_view.flash = Flash.OFF
+            if (binding.cameraView.flash == Flash.TORCH) {
+                binding.cameraView.flash = Flash.OFF
             }
 
             val maxSize = intent.getIntExtra("max_size", 0)
@@ -36,12 +39,12 @@ class CaptureActivity : AppCompatActivity() {
                 if (intent.getBooleanExtra("disable_preview", false)) {
                     try {
                         val disableMirror = intent.getBooleanExtra("disable_mirror", true)
-                        if (camera_view.facing == Facing.FRONT && disableMirror) {
+                        if (binding.cameraView.facing == Facing.FRONT && disableMirror) {
                             helper.flip(-1f, 1f) {
                                 helper.saveBitmapAndFinish(intent) {
                                     val returnIntent = Intent()
                                     returnIntent.putExtra("photo", it)
-                                    setResult(Activity.RESULT_OK, returnIntent)
+                                    setResult(RESULT_OK, returnIntent)
                                     finish()
                                 }
                             }
@@ -49,26 +52,26 @@ class CaptureActivity : AppCompatActivity() {
                             helper.saveBitmapAndFinish(intent) {
                                 val returnIntent = Intent()
                                 returnIntent.putExtra("photo", it)
-                                setResult(Activity.RESULT_OK, returnIntent)
+                                setResult(RESULT_OK, returnIntent)
                                 finish()
                             }
                         }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         val returnIntent = Intent()
                         returnIntent.putExtra("photo", "")
                         returnIntent.putExtra("native", true)
                         returnIntent.putExtra("crash", true)
-                        setResult(Activity.RESULT_OK, returnIntent)
+                        setResult(RESULT_OK, returnIntent)
                         finish()
                     }
                 } else {
                     val disableMirror = intent.getBooleanExtra("disable_mirror", true)
-                    if (camera_view.facing == Facing.FRONT && disableMirror) {
+                    if (binding.cameraView.facing == Facing.FRONT && disableMirror) {
                         helper.flip(-1f, 1f) {
-                            iv_preview.setImageBitmap(it)
+                            binding.ivPreview.setImageBitmap(it)
                         }
                     } else {
-                        iv_preview.setImageBitmap(bitmap)
+                        binding.ivPreview.setImageBitmap(bitmap)
                     }
                     showProgressDialog(false)
                     viewMode(false)
@@ -78,9 +81,11 @@ class CaptureActivity : AppCompatActivity() {
     }
 
     // MARK: Lifecycle
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_capture)
+        binding = ActivityCaptureBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         try {
 
@@ -97,78 +102,78 @@ class CaptureActivity : AppCompatActivity() {
             pageFinisher = PageFinisher(this, 3 * 1000 * 60)
 
             // Add camera listener
-            camera_view.setLifecycleOwner(this)
-            camera_view.addCameraListener(cameraListener)
-            camera_view.setPictureSize(SizeSelectors.smallest())
+            binding.cameraView.setLifecycleOwner(this)
+            binding.cameraView.addCameraListener(cameraListener)
+            binding.cameraView.setPictureSize(SizeSelectors.smallest())
 
             // Add take picture button listener
-            btn_take_picture.setOnClickListener {
+            binding.btnTakePicture.setOnClickListener {
                 var delay: Long = 0
-                if (btn_flash_on.visibility == View.VISIBLE && camera_view.facing == Facing.BACK) {
-                    camera_view.flash = Flash.TORCH
+                if (binding.btnFlashOn.isVisible && binding.cameraView.facing == Facing.BACK) {
+                    binding.cameraView.flash = Flash.TORCH
                     delay = 1000
                 }
                 showProgressDialog(true)
                 Handler().postDelayed({
-                    camera_view.playSounds = isAudioServiceMute()
+                    binding.cameraView.playSounds = isAudioServiceMute()
                     val snapshot = intent.extras!!.getBoolean("is_snapshot", true)
                     if (snapshot) {
-                        camera_view.takePictureSnapshot() // faster
+                        binding.cameraView.takePictureSnapshot() // faster
                     } else {
-                        camera_view.takePicture()
+                        binding.cameraView.takePicture()
                     }
                 }, delay)
             }
 
             // Add back button listener
-            btn_back.setOnClickListener {
+            binding.btnBack.setOnClickListener {
                 finish()
             }
 
             // Add retake button listener
-            btn_retake.setOnClickListener {
-                if (btn_flash_on.visibility == View.VISIBLE) {
-                    camera_view.flash = Flash.TORCH
+            binding.btnRetake.setOnClickListener {
+                if (binding.btnFlashOn.isVisible) {
+                    binding.cameraView.flash = Flash.TORCH
                 }
                 viewMode(true)
             }
 
             // Add rotate button listener
-            btn_rotate_picture.setOnClickListener {
-                helper.rotate(iv_preview.rotation + 90) {
-                    iv_preview.setImageBitmap(it)
+            binding.btnRotatePicture.setOnClickListener {
+                helper.rotate(binding.ivPreview.rotation + 90) {
+                    binding.ivPreview.setImageBitmap(it)
                 }
             }
 
             // Add select picture button listener
-            btn_select_picture.setOnClickListener {
+            binding.btnSelectPicture.setOnClickListener {
                 try {
                     helper.saveBitmapAndFinish(intent) {
                         val returnIntent = Intent()
                         returnIntent.putExtra("photo", it)
-                        setResult(Activity.RESULT_OK, returnIntent)
+                        setResult(RESULT_OK, returnIntent)
                         finish()
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     val returnIntent = Intent()
                     returnIntent.putExtra("photo", "")
                     returnIntent.putExtra("native", true)
                     returnIntent.putExtra("crash", true)
-                    setResult(Activity.RESULT_OK, returnIntent)
+                    setResult(RESULT_OK, returnIntent)
                     finish()
                 }
             }
 
-            btn_flash_on.setOnClickListener {
-                camera_view.flash = Flash.OFF
-                btn_flash_on.visibility = View.GONE
-                btn_flash_off.visibility = View.VISIBLE
+            binding.btnFlashOn.setOnClickListener {
+                binding.cameraView.flash = Flash.OFF
+                binding.btnFlashOn.visibility = View.GONE
+                binding.btnFlashOff.visibility = View.VISIBLE
             }
 
-            btn_flash_off.setOnClickListener {
-                camera_view.flash = Flash.TORCH
-                btn_flash_on.visibility = View.VISIBLE
-                btn_flash_off.visibility = View.GONE
+            binding.btnFlashOff.setOnClickListener {
+                binding.cameraView.flash = Flash.TORCH
+                binding.btnFlashOn.visibility = View.VISIBLE
+                binding.btnFlashOff.visibility = View.GONE
             }
 
             // set view mode
@@ -177,60 +182,70 @@ class CaptureActivity : AppCompatActivity() {
             // Check if the "disable_back" extra in the intent is true
             if (intent.getBooleanExtra("disable_back", false)) {
                 // Disable back camera functionality
-                camera_view.facing = Facing.FRONT
-
+                binding.cameraView.facing = Facing.FRONT
+                binding.tvCamera.text = "Cam 1"
                 // Set visibility of face silhouette based on the "show_face_area" extra in the intent
-                face_silhouette.visibility =
+                binding.faceSilhouette.visibility =
                     if (intent.getBooleanExtra("show_face_area", false)) View.VISIBLE else View.GONE
-                btn_switch_camera.visibility = View.GONE
+                binding.btnSwitchCamera.visibility = View.GONE
             } else {
                 // Set camera facing based on the "facing_back" extra in the intent
-                camera_view.facing =
-                    if (intent.getBooleanExtra("facing_back", true)) Facing.BACK else Facing.FRONT
+                if (intent.getBooleanExtra("facing_back", true)) {
+                    binding.cameraView.facing = Facing.BACK
+                    binding.tvCamera.text = "Cam 2"
+                } else {
+                    binding.cameraView.facing = Facing.FRONT
+                    binding.tvCamera.text = "Cam 1"
+                }
 
                 // Set visibility of face silhouette based on the camera facing and "show_face_area" extra
                 if (intent.getBooleanExtra(
                         "show_face_area",
                         false
-                    ) && camera_view.facing == Facing.FRONT
+                    ) && binding.cameraView.facing == Facing.FRONT
                 ) {
-                    face_silhouette.visibility = View.VISIBLE
+                    binding.faceSilhouette.visibility = View.VISIBLE
                 } else {
-                    face_silhouette.visibility = View.GONE
+                    binding.faceSilhouette.visibility = View.GONE
                 }
 
                 // Set visibility and click listener for the switch camera button
-                btn_switch_camera.visibility = View.VISIBLE
-                btn_switch_camera.setOnClickListener {
-                    camera_view.toggleFacing()
+                binding.btnSwitchCamera.visibility = View.VISIBLE
+                binding.btnSwitchCamera.setOnClickListener {
+                    binding.cameraView.toggleFacing()
+                    if (binding.cameraView.facing == Facing.FRONT) {
+                        binding.tvCamera.text = "Cam 1"
+                    } else {
+                        binding.tvCamera.text = "Cam 2"
+                    }
                     if (intent.getBooleanExtra(
                             "show_face_area",
                             false
-                        ) && camera_view.facing == Facing.FRONT
+                        ) && binding.cameraView.facing == Facing.FRONT
                     ) {
-                        face_silhouette.visibility = View.VISIBLE
+                        binding.faceSilhouette.visibility = View.VISIBLE
                     } else {
-                        face_silhouette.visibility = View.GONE
+                        binding.faceSilhouette.visibility = View.GONE
                     }
                 }
             }
 
-            iv_gd_logo.setOnClickListener {
+            binding.tvCamera.setOnClickListener {
                 val returnIntent = Intent()
                 returnIntent.putExtra("photo", "")
                 returnIntent.putExtra("native", true)
                 returnIntent.putExtra("crash", true)
-                setResult(Activity.RESULT_OK, returnIntent)
+                setResult(RESULT_OK, returnIntent)
                 finish()
             }
 
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             val data = Intent().apply {
                 putExtra("photo", "")
                 putExtra("native", false)
                 putExtra("crash", true)
             }
-            setResult(Activity.RESULT_OK, data)
+            setResult(RESULT_OK, data)
             finish()
         }
 
@@ -247,14 +262,14 @@ class CaptureActivity : AppCompatActivity() {
     }
 
     private fun showProgressDialog(show: Boolean) {
-        layout_progress.visibility = if (show) View.VISIBLE else View.GONE
+        binding.layoutProgress.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun viewMode(isCapture: Boolean) {
         if (isCapture) {
-            layout_preview.visibility = View.GONE
+            binding.layoutPreview.visibility = View.GONE
         } else {
-            layout_preview.visibility = View.VISIBLE
+            binding.layoutPreview.visibility = View.VISIBLE
         }
     }
 }

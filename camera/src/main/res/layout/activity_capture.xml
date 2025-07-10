@@ -7,7 +7,7 @@
     android:background="@android:color/black"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -20,19 +20,39 @@
             android:focusable="true"
             android:padding="8dp"
             android:src="@drawable/ic_back_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="DuplicateSpeakableTextCheck" />
 
         <ImageView
             android:id="@+id/iv_gd_logo"
             android:layout_width="96dp"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/img_gd_log"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:drawableEnd="@drawable/retake"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="Cam 1"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
