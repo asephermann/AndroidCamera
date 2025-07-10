@@ -38,6 +38,7 @@ class CameraPlugin(private val activity: Activity) : LifecycleObserver {
     fun getIntent(options: CameraPluginOptions): Intent {
         val intent = Intent(activity, CaptureActivity::class.java)
         intent.putExtra("name", options.name)
+        intent.putExtra("camera_source", options.cameraSource)
         intent.putExtra("facing_back", options.isFacingBack)
         intent.putExtra("show_face_area", options.showFaceArea)
         intent.putExtra("disable_back", options.disableFacingBack)

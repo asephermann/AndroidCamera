@@ -62,6 +62,7 @@ class Main2Activity : AppCompatActivity() {
             }
 
             val options = CameraPluginOptions.Builder()
+                .setCameraSource("Test Camera")
                 .setMaxSize(maxSize.toInt())
                 .setQuality(quality.toInt())
                 .setDisableFacingBack(false)

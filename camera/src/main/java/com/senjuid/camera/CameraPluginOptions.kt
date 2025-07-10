@@ -1,6 +1,7 @@
 package com.senjuid.camera
 
 class CameraPluginOptions private constructor(
+        val cameraSource: String?,
         val maxSize: Int?,
         val quality: Int?,
         val name: String?,
@@ -12,6 +13,7 @@ class CameraPluginOptions private constructor(
         val snapshot: Boolean?
 ) {
     data class Builder(
+            private var cameraSource: String? = "Cam 1",
             private var maxSize: Int? = 0,
             private var quality: Int? = 100,
             private var name: String? = "img_lite",
@@ -22,6 +24,7 @@ class CameraPluginOptions private constructor(
             private var disableMirroring: Boolean? = true,
             private var snapshot: Boolean? = true
     ) {
+        fun setCameraSource(cameraSource: String) = apply { this.cameraSource = cameraSource }
         fun setMaxSize(maxSize: Int) = apply { this.maxSize = maxSize }
         fun setQuality(quality: Int) = apply { this.quality = quality }
         fun setName(name: String) = apply { this.name = name }
@@ -55,6 +58,6 @@ class CameraPluginOptions private constructor(
         fun setDisablePreview(disable: Boolean) = apply { this.disablePreview = disable }
         fun setDisableMirroring(disable: Boolean) = apply { this.disableMirroring = disable }
         fun setSnapshot(snapshot: Boolean) = apply { this.snapshot = snapshot }
-        fun build() = CameraPluginOptions(maxSize, quality, name, isFacingBack, showFaceArea, disableFacingBack, disablePreview, disableMirroring, snapshot)
+        fun build() = CameraPluginOptions(cameraSource, maxSize, quality, name, isFacingBack, showFaceArea, disableFacingBack, disablePreview, disableMirroring, snapshot)
     }
 }

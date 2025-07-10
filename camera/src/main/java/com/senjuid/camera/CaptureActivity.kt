@@ -101,6 +101,9 @@ class CaptureActivity : AppCompatActivity() {
             // Init page timer
             pageFinisher = PageFinisher(this, 3 * 1000 * 60)
 
+            val cameraSource = intent.extras!!.getString("camera_source", "Cam 1")
+            binding.tvCamera.text = cameraSource
+
             // Add camera listener
             binding.cameraView.setLifecycleOwner(this)
             binding.cameraView.addCameraListener(cameraListener)
@@ -183,20 +186,14 @@ class CaptureActivity : AppCompatActivity() {
             if (intent.getBooleanExtra("disable_back", false)) {
                 // Disable back camera functionality
                 binding.cameraView.facing = Facing.FRONT
-                binding.tvCamera.text = "Cam 1"
                 // Set visibility of face silhouette based on the "show_face_area" extra in the intent
                 binding.faceSilhouette.visibility =
                     if (intent.getBooleanExtra("show_face_area", false)) View.VISIBLE else View.GONE
                 binding.btnSwitchCamera.visibility = View.GONE
             } else {
                 // Set camera facing based on the "facing_back" extra in the intent
-                if (intent.getBooleanExtra("facing_back", true)) {
-                    binding.cameraView.facing = Facing.BACK
-                    binding.tvCamera.text = "Cam 2"
-                } else {
-                    binding.cameraView.facing = Facing.FRONT
-                    binding.tvCamera.text = "Cam 1"
-                }
+                binding.cameraView.facing =
+                    if (intent.getBooleanExtra("facing_back", true)) Facing.BACK else Facing.FRONT
 
                 // Set visibility of face silhouette based on the camera facing and "show_face_area" extra
                 if (intent.getBooleanExtra(
@@ -213,11 +210,6 @@ class CaptureActivity : AppCompatActivity() {
                 binding.btnSwitchCamera.visibility = View.VISIBLE
                 binding.btnSwitchCamera.setOnClickListener {
                     binding.cameraView.toggleFacing()
-                    if (binding.cameraView.facing == Facing.FRONT) {
-                        binding.tvCamera.text = "Cam 1"
-                    } else {
-                        binding.tvCamera.text = "Cam 2"
-                    }
                     if (intent.getBooleanExtra(
                             "show_face_area",
                             false
