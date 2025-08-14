@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
@@ -86,6 +87,17 @@ class CaptureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCaptureBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemWindowInset = insets.systemWindowInsets
+            view.setPadding(
+                systemWindowInset.left,
+                systemWindowInset.top,
+                systemWindowInset.right,
+                systemWindowInset.bottom
+            )
+            insets
+        }
 
         try {
 
